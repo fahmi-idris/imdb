@@ -1,11 +1,13 @@
 import * as React from 'react';
 
-import { Heading } from 'components/ui-provider';
+import { Box, Heading } from 'components/ui-provider';
 
 const Welcome: React.FC = () => (
-  <Heading textAlign="center" m="0" fontWeight="300" scale={500}>
-    Daftar Transaksi
-  </Heading>
+  <Box my="20px">
+    <Heading textAlign="center" m="0" scale={500}>
+      IMDB Apps
+    </Heading>
+  </Box>
 );
 
 export default Welcome;

@@ -1,10 +1,16 @@
 import { DataMap, Pagination } from './common';
 
-type MovieType = 'series' | 'movie';
+export type MovieType = 'series' | 'movie' | 'episode' | '';
 
 export interface MovieRating {
   Source: string;
   Value: string;
+}
+
+export interface MovieParamsSearch {
+  s: string;
+  page: number;
+  type: MovieType;
 }
 
 export interface Movies {

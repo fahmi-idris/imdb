@@ -5,7 +5,7 @@ import { ScreenLoading } from 'components/loading';
 
 const Movies = React.lazy(() => import(/* webpackChunkName: 'movies' */ './movies-list'));
 
-const Transaction: React.FC = () => (
+const Routes: React.FC = () => (
   <React.Suspense fallback={<ScreenLoading />}>
     <Switch>
       <Route path="/" component={Movies} exact />
@@ -15,4 +15,4 @@ const Transaction: React.FC = () => (
   </React.Suspense>
 );
 
-export default Transaction;
+export default Routes;

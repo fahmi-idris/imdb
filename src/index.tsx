@@ -6,13 +6,10 @@ import { ConnectedRouter } from 'connected-react-router';
 
 import { UIProvider, GlobalStyles } from 'components/ui-provider';
 
-import configureStore from './stores';
+import { store, history } from 'utils/redux';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import App from './App';
-
-const initialState = window.INITIAL_REDUX_STATE || undefined;
-const { store, history } = configureStore(initialState);
 
 ReactDOM.render(
   <React.StrictMode>

@@ -14,8 +14,8 @@ const initialState: MoviesState = {
 const index: Reducer<MoviesState['index']> = (state = initialState.index, { type, payload }) => {
   switch (type) {
     case MoviesActionTypes.MOVIES_FETCH_SUCCESS:
-      if (payload instanceof Array) {
-        return payload.map((item: Movies) => (item.imdbID ? item.imdbID : ''));
+      if (payload.Search instanceof Array) {
+        return payload.Search.map((item: Movies) => (item.imdbID ? item.imdbID : ''));
       }
       return [];
     case MoviesActionTypes.MOVIES_FETCH_FAILED:
@@ -28,9 +28,9 @@ const index: Reducer<MoviesState['index']> = (state = initialState.index, { type
 const data: Reducer<MoviesState['data']> = (state = initialState.data, { type, payload }) => {
   switch (type) {
     case MoviesActionTypes.MOVIES_FETCH_SUCCESS:
-      if (payload instanceof Array) {
+      if (payload.Search instanceof Array) {
         const MoviesMap: DataMap<Movies> = {};
-        payload.forEach((item: Movies) => {
+        payload.Search.forEach((item: Movies) => {
           if (item.imdbID) {
             MoviesMap[item.imdbID] = item;
           }
