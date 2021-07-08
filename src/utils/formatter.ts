@@ -8,3 +8,5 @@ export const toLocaleDate = (dateTime: string): string => {
 };
 
 export const toUppercase = (value: string): string => value.toUpperCase();
+
+export const toCapitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);

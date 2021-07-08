@@ -44,5 +44,6 @@ export interface Movies {
 export interface MoviesState {
   data: DataMap<Movies>;
   index: string[];
+  detail: Movies | null;
   pagination: Pagination | null;
 }

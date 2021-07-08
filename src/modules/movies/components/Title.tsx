@@ -2,10 +2,14 @@ import * as React from 'react';
 
 import { Box, Heading } from 'components/ui-provider';
 
-const Welcome: React.FC = () => (
+interface TitleProps {
+  title: string;
+}
+
+const Welcome: React.FC<TitleProps> = ({ title }) => (
   <Box my="20px">
     <Heading textAlign="center" m="0" scale={500}>
-      IMDB Apps
+      {title}
     </Heading>
   </Box>
 );

@@ -8,6 +8,7 @@ import { MoviesActionTypes } from './types';
 const initialState: MoviesState = {
   index: [],
   data: {},
+  detail: null,
   pagination: null,
 };
 
@@ -58,9 +59,21 @@ const pagination: Reducer<MoviesState['pagination']> = (state = initialState.pag
   }
 };
 
+const detail: Reducer<MoviesState['detail']> = (state = initialState.detail, { type, payload }) => {
+  switch (type) {
+    case MoviesActionTypes.MOVIES_FETCH_DETAIL_SUCCESS:
+      return payload;
+    case MoviesActionTypes.MOVIES_FETCH_DETAIL_FAILED:
+      return state;
+    default:
+      return state;
+  }
+};
+
 const reducer = combineReducers<MoviesState>({
   index,
   data,
+  detail,
   pagination,
 });
 

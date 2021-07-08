@@ -21,7 +21,7 @@ const SearchMovies: React.FC<SearchMoviesProps> = ({ onSearch, onSort, query, so
       <FieldStyled
         name="search"
         type="text"
-        placeholder="Cari nama film"
+        placeholder="Enter movie, series, or episode name"
         value={query}
         onChange={(e) => onSearch(e.target.value)}
         icon={() => <IconSearch fill={colors.muted} />}

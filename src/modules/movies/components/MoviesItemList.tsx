@@ -11,6 +11,7 @@ import { Button } from 'components/button';
 import { Popup } from 'components/popup';
 
 import useOnClickOutside from 'utils/hooks/useClickOutside';
+import { toCapitalize } from 'utils/formatter';
 
 interface MoviesItemListProps {
   index: string[];
@@ -48,12 +49,12 @@ const MoviesItemList: React.FC<MoviesItemListProps> = ({ index, data }) => {
               </Box>
               <Box flex="0" pt="10px">
                 <Badge variant="primary" badgeColor={Type === 'series' ? colors.green : colors.orange}>
-                  {Type}
+                  {toCapitalize(Type)}
                 </Badge>
               </Box>
             </Box>
             <Button block variant="link" buttonSize="small" onClick={() => history.push(`/${imdbID}/movie`)}>
-              Lihat selengkapnya
+              Read more
             </Button>
           </Box>
         );
