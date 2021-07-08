@@ -1,4 +1,4 @@
-import { DataMap, Pagination } from './common';
+import { DataMap, Pagination, StatusCode } from './common';
 
 export type MovieType = 'series' | 'movie' | 'episode' | '';
 
@@ -11,9 +11,10 @@ export interface MovieParamsSearch {
   s: string;
   page: number;
   type: MovieType;
+  reset?: boolean;
 }
 
-export interface Movies {
+export interface Movies extends StatusCode {
   imdbID: string;
   imdbRating: string;
   imdbVotes: string;
@@ -38,12 +39,12 @@ export interface Movies {
   BoxOffice: string;
   Production: string;
   Website: string;
-  Response: string;
 }
 
 export interface MoviesState {
   data: DataMap<Movies>;
   index: string[];
   detail: Movies | null;
-  pagination: Pagination | null;
+  pagination: Pagination;
+  errors: string | null;
 }

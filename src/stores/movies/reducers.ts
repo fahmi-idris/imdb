@@ -9,7 +9,10 @@ const initialState: MoviesState = {
   index: [],
   data: {},
   detail: null,
-  pagination: null,
+  errors: null,
+  pagination: {
+    total: 0,
+  },
 };
 
 const index: Reducer<MoviesState['index']> = (state = initialState.index, { type, payload }) => {
@@ -50,8 +53,11 @@ const pagination: Reducer<MoviesState['pagination']> = (state = initialState.pag
   switch (type) {
     case MoviesActionTypes.MOVIES_FETCH_SUCCESS:
       if (payload) {
-        const { data: _deletedData, ...res } = payload;
-        return res;
+        const { totalResults } = payload;
+        const total = Math.ceil(Number(totalResults) / 10);
+        return {
+          total,
+        };
       }
       return state;
     default:
@@ -70,10 +76,24 @@ const detail: Reducer<MoviesState['detail']> = (state = initialState.detail, { t
   }
 };
 
+const errors: Reducer<MoviesState['errors']> = (state = initialState.errors, { type, payload }) => {
+  switch (type) {
+    case MoviesActionTypes.MOVIES_FETCH_DETAIL_SUCCESS:
+    case MoviesActionTypes.MOVIES_FETCH_SUCCESS:
+      return null;
+    case MoviesActionTypes.MOVIES_FETCH_FAILED:
+    case MoviesActionTypes.MOVIES_FETCH_DETAIL_FAILED:
+      return payload;
+    default:
+      return state;
+  }
+};
+
 const reducer = combineReducers<MoviesState>({
   index,
   data,
   detail,
+  errors,
   pagination,
 });
 

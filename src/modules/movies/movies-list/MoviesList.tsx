@@ -4,10 +4,11 @@ import { MovieType } from 'interfaces/movies';
 
 import { Box } from 'components/ui-provider';
 import { Message } from 'components/message';
-import { ScreenLoading } from 'components/loading';
+import { Circle } from 'components/loading';
+import { InfiniteScroll } from 'components/infinite-scroll';
 
 import getLoading from 'stores/app/loadings/selectors';
-import { getMoviesIndex, getMoviesData } from 'stores/movies/selectors';
+import { getMoviesIndex, getMoviesData, getMoviesPagination, getMoviesErrors } from 'stores/movies/selectors';
 import { fetchMoviesRequest } from 'stores/movies/actions';
 import { MoviesActionTypes } from 'stores/movies/types';
 import { useAppSelector, useAppDispatch } from 'utils/redux';
@@ -20,33 +21,47 @@ const MoviesList: React.FC = () => {
   const dispatch = useAppDispatch();
   const index = useAppSelector(({ movies }) => getMoviesIndex(movies));
   const data = useAppSelector(({ movies }) => getMoviesData(movies));
+  const errors = useAppSelector(({ movies }) => getMoviesErrors(movies));
+  const { total } = useAppSelector(({ movies }) => getMoviesPagination(movies));
   const isLoading = useAppSelector(({ app: { loadings } }) =>
     getLoading(loadings, MoviesActionTypes.MOVIES_FETCH_REQUEST),
   );
 
   const [query, setQuery] = React.useState<string>('');
   const [sorting, setSorting] = React.useState<MovieType>('');
+  const [page] = React.useState<number>(1);
+
+  const hasMoreData = page < total;
   const debouncedValue = useDebounce<string>(query, 750);
 
   const handleSearch = (value: string) => {
     setQuery(value);
   };
 
+  const loadData = () => {
+    const search = query && query.length > 2 ? query : defaultMovieTitle;
+    dispatch(fetchMoviesRequest({ s: search, page, type: sorting }));
+  };
+
   React.useEffect(() => {
-    const search = query && query.length > 3 ? query : defaultMovieTitle;
-    dispatch(fetchMoviesRequest({ s: search, page: 1, type: sorting }));
+    loadData();
   }, [debouncedValue, sorting]);
 
   const renderList = () => {
-    if (isLoading) {
-      return <ScreenLoading />;
+    if (errors) {
+      return <Message message={errors} mt="20px" state="warning" />;
     }
 
-    if (!index.length) {
-      return <Message message={`Data tidak ditemukan`} mt="20px" state="warning" />;
-    }
-
-    return <MoviesItemList index={index} data={data} />;
+    return (
+      <InfiniteScroll hasMoreData={hasMoreData} isLoading={isLoading} onBottomHit={loadData} loadOnMount={false}>
+        <MoviesItemList index={index} data={data} />
+        {isLoading && (
+          <Box display="flex" alignItems="center" justifyContent="center" my="20px">
+            <Circle />
+          </Box>
+        )}
+      </InfiniteScroll>
+    );
   };
 
   return (

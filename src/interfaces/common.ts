@@ -5,14 +5,17 @@ export interface DataMap<T> {
   [key: string]: T;
 }
 
-export interface PaginatedData<T> {
+export interface StatusCode {
+  Response?: 'True' | 'False';
+  Error?: string;
+}
+
+export interface PaginatedData<T> extends StatusCode {
   Search: T[];
   totalResults?: string;
-  Response?: boolean;
 }
 
 export interface Pagination {
-  page: number | null;
   total: number;
 }
 
