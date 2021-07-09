@@ -11,7 +11,7 @@ export interface MovieParamsSearch {
   s: string;
   page: number;
   type: MovieType;
-  reset?: boolean;
+  isInfiniteScroll?: boolean;
 }
 
 export interface Movies extends StatusCode {

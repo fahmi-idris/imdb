@@ -29,8 +29,9 @@ const MoviesList: React.FC = () => {
 
   const [query, setQuery] = React.useState<string>('');
   const [sorting, setSorting] = React.useState<MovieType>('');
-  const [page] = React.useState<number>(1);
+  const [page, setPage] = React.useState<number>(1);
 
+  const search = query && query.length > 2 ? query : defaultMovieTitle;
   const hasMoreData = page < total;
   const debouncedValue = useDebounce<string>(query, 750);
 
@@ -38,13 +39,19 @@ const MoviesList: React.FC = () => {
     setQuery(value);
   };
 
-  const loadData = () => {
-    const search = query && query.length > 2 ? query : defaultMovieTitle;
-    dispatch(fetchMoviesRequest({ s: search, page, type: sorting }));
+  const loadData = (nextPage: number, isInfiniteScroll?: boolean) => {
+    dispatch(fetchMoviesRequest({ s: search, page: nextPage, type: sorting, isInfiniteScroll }));
+  };
+
+  const loadInfiniteScroll = () => {
+    const nextPage = page + 1;
+    loadData(nextPage, true);
+    setPage(nextPage);
   };
 
   React.useEffect(() => {
-    loadData();
+    loadData(1);
+    setPage(1);
   }, [debouncedValue, sorting]);
 
   const renderList = () => {
@@ -53,7 +60,12 @@ const MoviesList: React.FC = () => {
     }
 
     return (
-      <InfiniteScroll hasMoreData={hasMoreData} isLoading={isLoading} onBottomHit={loadData} loadOnMount={false}>
+      <InfiniteScroll
+        hasMoreData={hasMoreData}
+        isLoading={isLoading}
+        onBottomHit={loadInfiniteScroll}
+        loadOnMount={false}
+      >
         <MoviesItemList index={index} data={data} />
         {isLoading && (
           <Box display="flex" alignItems="center" justifyContent="center" my="20px">

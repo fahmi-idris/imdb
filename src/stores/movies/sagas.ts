@@ -11,7 +11,9 @@ import { callApi } from 'utils/api';
 import { fetchMoviesSuccess, fetchMoviesFailed, fetchMoviesDetailSuccess, fetchMoviesDetailFailed } from './actions';
 import { MoviesActionTypes } from './types';
 
-function* handleFetchMoviesRequest({ payload: { s, page, type } }: TypedReduxAction<MovieParamsSearch>) {
+function* handleFetchMoviesRequest({
+  payload: { s, page, type, isInfiniteScroll },
+}: TypedReduxAction<MovieParamsSearch>) {
   yield put(setLoading(MoviesActionTypes.MOVIES_FETCH_REQUEST, true));
   try {
     const res: PaginatedData<Movies> = yield call(callApi, {
@@ -22,7 +24,7 @@ function* handleFetchMoviesRequest({ payload: { s, page, type } }: TypedReduxAct
         page,
       },
     });
-    yield put(fetchMoviesSuccess(res));
+    yield put(fetchMoviesSuccess(res, isInfiniteScroll));
   } catch (err) {
     const error: string = get(err, 'response.data.message', 'Whoops, an error occurred! Please try again.');
     yield put(fetchMoviesFailed(error));

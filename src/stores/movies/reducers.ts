@@ -18,8 +18,12 @@ const initialState: MoviesState = {
 const index: Reducer<MoviesState['index']> = (state = initialState.index, { type, payload }) => {
   switch (type) {
     case MoviesActionTypes.MOVIES_FETCH_SUCCESS:
-      if (payload.Search instanceof Array) {
-        return payload.Search.map((item: Movies) => (item.imdbID ? item.imdbID : ''));
+      if (payload.data.Search instanceof Array) {
+        const data = payload.data.Search.map((item: Movies) => (item.imdbID ? item.imdbID : ''));
+        if (payload.isInfiniteScroll) {
+          return [...state, ...data];
+        }
+        return [...data];
       }
       return [];
     case MoviesActionTypes.MOVIES_FETCH_FAILED:
@@ -32,13 +36,16 @@ const index: Reducer<MoviesState['index']> = (state = initialState.index, { type
 const data: Reducer<MoviesState['data']> = (state = initialState.data, { type, payload }) => {
   switch (type) {
     case MoviesActionTypes.MOVIES_FETCH_SUCCESS:
-      if (payload.Search instanceof Array) {
+      if (payload.data.Search instanceof Array) {
         const MoviesMap: DataMap<Movies> = {};
-        payload.Search.forEach((item: Movies) => {
+        payload.data.Search.forEach((item: Movies) => {
           if (item.imdbID) {
             MoviesMap[item.imdbID] = item;
           }
         });
+        if (payload.isInfiniteScroll) {
+          return { ...state, ...MoviesMap };
+        }
         return { ...MoviesMap };
       }
       return { ...state };
@@ -52,8 +59,8 @@ const data: Reducer<MoviesState['data']> = (state = initialState.data, { type, p
 const pagination: Reducer<MoviesState['pagination']> = (state = initialState.pagination, { type, payload }) => {
   switch (type) {
     case MoviesActionTypes.MOVIES_FETCH_SUCCESS:
-      if (payload) {
-        const { totalResults } = payload;
+      if (payload.data.Response === 'True') {
+        const { totalResults } = payload.data;
         const total = Math.ceil(Number(totalResults) / 10);
         return {
           total,
@@ -70,7 +77,7 @@ const detail: Reducer<MoviesState['detail']> = (state = initialState.detail, { t
     case MoviesActionTypes.MOVIES_FETCH_DETAIL_SUCCESS:
       return payload;
     case MoviesActionTypes.MOVIES_FETCH_DETAIL_FAILED:
-      return state;
+      return initialState.detail;
     default:
       return state;
   }
